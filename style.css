@@ -89,6 +89,9 @@ button:hover { background:#e53935; }
 .history-container {
   max-height:220px;
   overflow-y:auto;
+  text-align:left;
+  border-top:1px solid #eee;
+  padding-top:5px;
 }
 
 .history-item {
