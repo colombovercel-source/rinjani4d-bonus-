@@ -1,85 +1,78 @@
-// ================= MEMBER =================
 const claimBtn = document.getElementById("claimBtn");
+const userIdInput = document.getElementById("userId");
+const popup = document.getElementById("popup");
+const popupTitle = document.getElementById("popupTitle");
+const popupMessage = document.getElementById("popupMessage");
 const historyList = document.getElementById("historyList");
-const resultBox = document.getElementById("result");
 
-let historyData = JSON.parse(localStorage.getItem("history")) || [];
+let claimedUsers = JSON.parse(localStorage.getItem("claimedUsers")) || {};
+
+renderHistory();
+
+claimBtn.addEventListener("click", () => {
+  const userId = userIdInput.value.trim();
+
+  if (!userId) {
+    showPopup("⚠️ Perhatian", "Silakan masukkan User ID.");
+    return;
+  }
+
+  if (claimedUsers[userId]) {
+    showPopup(
+      "❌ Sudah Klaim",
+      `User ID <b>${maskUser(userId)}</b> sudah pernah klaim bonus.`
+    );
+    return;
+  }
+
+  const bonus = Math.floor(Math.random() * (200000 - 25000 + 1)) + 25000;
+
+  claimedUsers[userId] = {
+    bonus,
+    time: Date.now()
+  };
+
+  localStorage.setItem("claimedUsers", JSON.stringify(claimedUsers));
+
+  showPopup(
+    "🎉 Selamat!",
+    `User ID <b>${maskUser(userId)}</b> mendapatkan bonus <b>Rp ${bonus.toLocaleString("id-ID")}</b>`
+  );
+
+  userIdInput.value = "";
+  renderHistory();
+});
 
 function renderHistory() {
-  if (!historyList) return;
   historyList.innerHTML = "";
-  historyData.slice(0, 5).forEach(item => {
+
+  const entries = Object.entries(claimedUsers)
+    .sort((a, b) => b[1].time - a[1].time)
+    .slice(0, 20);
+
+  if (entries.length === 0) {
+    historyList.innerHTML = "<li>Belum ada klaim</li>";
+    return;
+  }
+
+  entries.forEach(([user, data]) => {
     const li = document.createElement("li");
-    li.textContent = `${item.user} berhasil klaim bonus`;
+    li.innerHTML = `<b>${maskUser(user)}</b> — Rp ${data.bonus.toLocaleString("id-ID")}`;
     historyList.appendChild(li);
   });
 }
 
-if (claimBtn) {
-  renderHistory();
-
-  claimBtn.onclick = () => {
-    const userId = document.getElementById("userId").value.trim();
-    if (!userId) {
-      alert("User ID wajib diisi");
-      return;
-    }
-
-    if (localStorage.getItem("claimed_" + userId)) {
-      alert("User ID ini sudah pernah klaim bonus");
-      return;
-    }
-
-    localStorage.setItem("claimed_" + userId, "true");
-    historyData.unshift({ user: userId });
-    localStorage.setItem("history", JSON.stringify(historyData));
-
-    resultBox.classList.remove("hidden");
-    resultBox.innerHTML = `
-      <h3>🎉 Selamat!</h3>
-      <p>User ID <b>${userId}</b> berhasil klaim bonus.</p>
-      <p>Silakan screenshot dan kirim ke CS.</p>
-      <button onclick="window.open('https://rinjanipuncak.com','_blank')">
-        HUBUNGI CS
-      </button>
-    `;
-
-    renderHistory();
-  };
+function maskUser(userId) {
+  if (userId.length <= 4) return userId;
+  return userId.slice(0, 4) + "***" + userId.slice(-3);
 }
 
-// ================= ADMIN =================
-function adminLogin() {
-  const user = document.getElementById("adminUser").value;
-  const pass = document.getElementById("adminPass").value;
-
-  if (user === "admin" && pass === "admin123") {
-    localStorage.setItem("admin_login", "true");
-    showDashboard();
-  } else {
-    alert("Login admin gagal");
-  }
+function showPopup(title, message) {
+  popupTitle.innerHTML = title;
+  popupMessage.innerHTML = message;
+  popup.style.display = "flex";
 }
 
-function showDashboard() {
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-
-  const list = document.getElementById("adminData");
-  list.innerHTML = "";
-
-  historyData.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = item.user;
-    list.appendChild(li);
-  });
-}
-
-function logout() {
-  localStorage.removeItem("admin_login");
-  location.reload();
-}
-
-if (localStorage.getItem("admin_login")) {
-  showDashboard();
+function closePopup() {
+  popup.style.display = "none";
 }
