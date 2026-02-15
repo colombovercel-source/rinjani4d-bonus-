@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin | RINJANI4D</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <header class="header">
+    <h1>Admin RINJANI4D</h1>
+    <p>Dashboard Monitoring Klaim</p>
+  </header>
+
+  <section class="card" id="loginBox">
+    <input type="text" id="adminUser" placeholder="Username Admin">
+    <input type="password" id="adminPass" placeholder="Password Admin">
+    <button onclick="adminLogin()">LOGIN</button>
+  </section>
+
+  <section class="card hidden" id="dashboard">
+    <h2>Data Klaim Bonus</h2>
+    <ul id="adminData"></ul>
+    <button class="logout-btn" onclick="logout()">LOGOUT</button>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
