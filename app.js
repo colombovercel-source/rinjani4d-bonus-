@@ -5,7 +5,23 @@ const popupTitle = document.getElementById("popupTitle");
 const popupMessage = document.getElementById("popupMessage");
 const historyList = document.getElementById("historyList");
 
+// Nominal bulat: 25.000 – 200.000 (kelipatan 5.000)
+const BONUS_LIST = [];
+for (let i = 25000; i <= 200000; i += 5000) {
+  BONUS_LIST.push(i);
+}
+
+// Storage
 let claimedUsers = JSON.parse(localStorage.getItem("claimedUsers")) || {};
+let historyData = JSON.parse(localStorage.getItem("historyData")) || [];
+
+// Buat 20 riwayat acak (HANYA JIKA KOSONG)
+if (historyData.length === 0) {
+  for (let i = 0; i < 20; i++) {
+    historyData.push(generateRandomHistory());
+  }
+  saveHistory();
+}
 
 renderHistory();
 
@@ -25,14 +41,19 @@ claimBtn.addEventListener("click", () => {
     return;
   }
 
-  const bonus = Math.floor(Math.random() * (200000 - 25000 + 1)) + 25000;
+  const bonus = randomBonus();
 
-  claimedUsers[userId] = {
-    bonus,
+  claimedUsers[userId] = true;
+  historyData.unshift({
+    user: userId,
+    bonus: bonus,
     time: Date.now()
-  };
+  });
+
+  historyData = historyData.slice(0, 20);
 
   localStorage.setItem("claimedUsers", JSON.stringify(claimedUsers));
+  saveHistory();
 
   showPopup(
     "🎉 Selamat!",
@@ -43,28 +64,37 @@ claimBtn.addEventListener("click", () => {
   renderHistory();
 });
 
+// ================= FUNCTIONS =================
+
 function renderHistory() {
   historyList.innerHTML = "";
 
-  const entries = Object.entries(claimedUsers)
-    .sort((a, b) => b[1].time - a[1].time)
-    .slice(0, 20);
-
-  if (entries.length === 0) {
-    historyList.innerHTML = "<li>Belum ada klaim</li>";
-    return;
-  }
-
-  entries.forEach(([user, data]) => {
+  historyData.forEach(item => {
     const li = document.createElement("li");
-    li.innerHTML = `<b>${maskUser(user)}</b> — Rp ${data.bonus.toLocaleString("id-ID")}`;
+    li.innerHTML = `<b>${maskUser(item.user)}</b> — Rp ${item.bonus.toLocaleString("id-ID")}`;
     historyList.appendChild(li);
   });
 }
 
-function maskUser(userId) {
-  if (userId.length <= 4) return userId;
-  return userId.slice(0, 4) + "***" + userId.slice(-3);
+function maskUser(user) {
+  if (user.length <= 4) return user;
+  return user.slice(0, 4) + "***" + user.slice(-3);
+}
+
+function randomBonus() {
+  return BONUS_LIST[Math.floor(Math.random() * BONUS_LIST.length)];
+}
+
+function generateRandomHistory() {
+  return {
+    user: "user" + Math.floor(Math.random() * 9000 + 1000),
+    bonus: randomBonus(),
+    time: Date.now()
+  };
+}
+
+function saveHistory() {
+  localStorage.setItem("historyData", JSON.stringify(historyData));
 }
 
 function showPopup(title, message) {
