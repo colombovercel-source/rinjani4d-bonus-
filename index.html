@@ -9,15 +9,15 @@
 </head>
 <body>
 
-<!-- Judul kecil di atas box -->
 <div class="title-small">SISTEM PUSAT RINJANI4D</div>
 
 <!-- Kotak Klaim Freebet -->
 <div class="container">
-  <h1>🎁 Claim Freebet RINJANI4D</h1>
+  <h1>🎁 Claim Freebet 🎁 
+        RINJANI4D</h1>
   <p>Masukkan <strong>User ID</strong> dan <strong>Kode Voucher</strong> Anda.<br>Hanya bisa klaim 1x per akun.</p>
 
-  <input type="text" id="userId" placeholder="Masukkan User ID">
+  <input type="text" id="userId" placeholder="Masukkan User ID Member">
   <input type="text" id="voucher" placeholder="Masukkan Kode Voucher">
   <button onclick="claimFreebet()">CLAIM FREEBET</button>
 
@@ -26,21 +26,26 @@
   </div>
 
   <div class="message" id="message"></div>
+
+  <!-- Tulisan kecil meyakinkan -->
   <div class="tulisan-meyakinkan">💎 Tampilan ini resmi & asli RINJANI4D</div>
 </div>
 
-<!-- Riwayat Freebet Terakhir -->
-<div class="history-container" id="historyContainer">
-  <!-- Riwayat akan di-generate JS -->
+<!-- Riwayat Terakhir Freebet -->
+<div class="container history-box">
+  <h2>Riwayat Terakhir Freebet</h2>
+  <div class="history-container" id="historyContainer"></div>
 </div>
 
-<!-- Modal Popup -->
+<!-- Popup -->
 <div id="popupModal" class="modal">
   <div class="modal-content">
-    <h2>🎉 Selamat!</h2>
+    <h2>💖 Selamat!💖 </h2>
     <p id="popupMessage"></p>
     <button onclick="closePopup()">Tutup</button>
-    <a href="https://rinjanipuncak.com" target="_blank"><button>💬 Hubungi Admin / CS</button></a>
+    <a href="https://rinjanipuncak.com" target="_blank">
+      <button class="cs-btn">💬 Hubungi Admin / CS</button>
+    </a>
   </div>
 </div>
 
