@@ -1,1 +1,59 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Freebet RINJANI4D</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="title-small">SISTEM PUSAT RINJANI4D</div>
+
+  <!-- BOX CLAIM -->
+  <div class="container">
+    <h1>🎁 Claim Freebet RINJANI4D</h1>
+    <p>
+      Masukkan <strong>User ID</strong> dan <strong>Kode Voucher</strong> Anda.<br>
+      Hanya bisa klaim 1x per akun.
+    </p>
+
+    <input type="text" id="userId" placeholder="Masukkan User ID Member">
+    <input type="text" id="voucher" placeholder="Masukkan Kode Voucher">
+    <button onclick="claimFreebet()">CLAIM FREEBET</button>
+
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="official-text">
+      💎 Tampilan ini resmi & asli sistem pusat RINJANI4D.
+      Proses divalidasi langsung oleh sistem pusat.
+    </div>
+  </div>
+
+  <!-- RIWAYAT -->
+  <div class="history-box">
+    <h2>Riwayat Terakhir Freebet</h2>
+    <div class="history-container" id="historyContainer"></div>
+  </div>
+
+  <!-- POPUP -->
+  <div id="popupModal" class="modal">
+    <div class="modal-content">
+      <h2> 💖Selamat!💖</h2>
+      <p id="popupMessage"></p>
+      <button onclick="closePopup()">Tutup</button>
+      <a href="https://rinjanipuncak.com" target="_blank">
+        <button class="cs-btn">💬 Hubungi Admin / CS</button>
+      </a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
