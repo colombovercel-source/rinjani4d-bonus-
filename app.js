@@ -1,108 +1,92 @@
-const claimBtn = document.getElementById("claimBtn");
-const userIdInput = document.getElementById("userId");
-const popup = document.getElementById("popup");
-const popupTitle = document.getElementById("popupTitle");
-const popupMessage = document.getElementById("popupMessage");
-const historyList = document.getElementById("historyList");
+const validVoucher = "2026MAXWIN";
+const userClaimed = {};
+const historyContainer = document.getElementById("historyContainer");
 
-// Nominal bulat: 25.000 – 200.000 (kelipatan 5.000)
-const BONUS_LIST = [];
-for (let i = 25000; i <= 200000; i += 5000) {
-  BONUS_LIST.push(i);
+// Generate 20 riwayat awal
+function generateHistory() {
+  let data = [];
+  for (let i = 0; i < 20; i++) {
+    let userId = "user" + Math.floor(Math.random() * 9999);
+    let freebet = Math.floor(Math.random() * (200000 - 20000 + 1) / 1000) * 1000;
+    data.push({ userId, freebet });
+  }
+  return data;
 }
 
-// Storage
-let claimedUsers = JSON.parse(localStorage.getItem("claimedUsers")) || {};
-let historyData = JSON.parse(localStorage.getItem("historyData")) || [];
+let historyData = generateHistory();
 
-// Buat 20 riwayat acak (HANYA JIKA KOSONG)
-if (historyData.length === 0) {
-  for (let i = 0; i < 20; i++) {
-    historyData.push(generateRandomHistory());
-  }
-  saveHistory();
+function renderHistory() {
+  historyContainer.innerHTML = "";
+  historyData.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "history-item";
+    div.innerHTML = `
+      <span>${item.userId}</span>
+      <span>IDR ${item.freebet.toLocaleString("id-ID")}</span>
+    `;
+    historyContainer.appendChild(div);
+  });
 }
 
 renderHistory();
 
-claimBtn.addEventListener("click", () => {
-  const userId = userIdInput.value.trim();
+function getRandomFreebet() {
+  return Math.floor(Math.random() * (200000 - 20000 + 1) / 1000) * 1000;
+}
 
-  if (!userId) {
-    showPopup("⚠️ Perhatian", "Silakan masukkan User ID.");
+function claimFreebet() {
+  const userId = document.getElementById("userId").value.trim();
+  const voucher = document.getElementById("voucher").value.trim();
+  const messageEl = document.getElementById("message");
+  const progressContainer = document.getElementById("progressContainer");
+  const progressBar = document.getElementById("progressBar");
+
+  if (!userId || !voucher) {
+    messageEl.style.color = "red";
+    messageEl.textContent = "User ID dan kode wajib diisi.";
     return;
   }
 
-  if (claimedUsers[userId]) {
-    showPopup(
-      "❌ Sudah Klaim",
-      `User ID <b>${maskUser(userId)}</b> sudah pernah klaim bonus.`
-    );
+  if (voucher !== validVoucher) {
+    messageEl.style.color = "red";
+    messageEl.textContent = "Kode tidak valid.";
     return;
   }
 
-  const bonus = randomBonus();
+  if (userClaimed[userId]) {
+    messageEl.style.color = "red";
+    messageEl.textContent = "User ID sudah klaim.";
+    return;
+  }
 
-  claimedUsers[userId] = true;
-  historyData.unshift({
-    user: userId,
-    bonus: bonus,
-    time: Date.now()
-  });
+  progressContainer.style.display = "block";
+  progressBar.style.width = "0%";
+  messageEl.textContent = "";
 
-  historyData = historyData.slice(0, 20);
+  let width = 0;
+  let interval = setInterval(() => {
+    width++;
+    progressBar.style.width = width + "%";
 
-  localStorage.setItem("claimedUsers", JSON.stringify(claimedUsers));
-  saveHistory();
+    if (width >= 100) {
+      clearInterval(interval);
+      const freebet = getRandomFreebet();
+      userClaimed[userId] = true;
 
-  showPopup(
-    "💖 Selamat !! 💖",
-    `User ID <b>${maskUser(userId)}</b> mendapatkan bonus <b>Rp ${bonus.toLocaleString("id-ID")}</b>`
-  );
+      historyData.unshift({ userId, freebet });
+      if (historyData.length > 20) historyData.pop();
+      renderHistory();
 
-  userIdInput.value = "";
-  renderHistory();
-});
+      document.getElementById("popupMessage").innerHTML =
+        `User ID: <strong>${userId}</strong><br>
+         Freebet: <strong>${freebet.toLocaleString("id-ID")}</strong><br>
+         Silahkan screenshot dan kirim ke Admin.`;
 
-// ================= FUNCTIONS =================
-
-function renderHistory() {
-  historyList.innerHTML = "";
-
-  historyData.forEach(item => {
-    const li = document.createElement("li");
-    li.innerHTML = `<b>${maskUser(item.user)}</b> — Rp ${item.bonus.toLocaleString("id-ID")}`;
-    historyList.appendChild(li);
-  });
-}
-
-function maskUser(user) {
-  if (user.length <= 4) return user;
-  return user.slice(0, 4) + "***" + user.slice(-3);
-}
-
-function randomBonus() {
-  return BONUS_LIST[Math.floor(Math.random() * BONUS_LIST.length)];
-}
-
-function generateRandomHistory() {
-  return {
-    user: "user" + Math.floor(Math.random() * 9000 + 1000),
-    bonus: randomBonus(),
-    time: Date.now()
-  };
-}
-
-function saveHistory() {
-  localStorage.setItem("historyData", JSON.stringify(historyData));
-}
-
-function showPopup(title, message) {
-  popupTitle.innerHTML = title;
-  popupMessage.innerHTML = message;
-  popup.style.display = "flex";
+      document.getElementById("popupModal").style.display = "flex";
+    }
+  }, 20);
 }
 
 function closePopup() {
-  popup.style.display = "none";
+  document.getElementById("popupModal").style.display = "none";
 }
