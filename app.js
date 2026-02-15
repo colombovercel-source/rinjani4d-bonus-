@@ -4,13 +4,29 @@ const userClaimed = {};
 const validVoucher = "2026MAXWIN";
 const historyContainer = document.getElementById('historyContainer');
 
-// Generate 20 riwayat awal acak
-let historyData = [];
-for(let i=0;i<20;i++){
-  const userId = "user"+Math.floor(Math.random()*1000);
-  const freebet = Math.floor(Math.random()*(200000-20000+1)/1000)*1000;
-  historyData.push({userId, freebet});
-}
+// Generate 20 riwayat awal acak (lebih formal)
+let historyData = [
+  {userId:"RJP84921", freebet:12500},
+  {userId:"MAX77103", freebet:25000},
+  {userId:"JPX66219", freebet:18000},
+  {userId:"WIN90452", freebet:10000},
+  {userId:"RIN33481", freebet:50000},
+  {userId:"SPN72819", freebet:15000},
+  {userId:"GAC55302", freebet:22000},
+  {userId:"RTP90117", freebet:30000},
+  {userId:"BET66741", freebet:12000},
+  {userId:"LUX88190", freebet:75000},
+  {userId:"VIP20418", freebet:20000},
+  {userId:"JPQ44771", freebet:14000},
+  {userId:"MAX99812", freebet:100000},
+  {userId:"SPN30177", freebet:16500},
+  {userId:"RJP77564", freebet:28000},
+  {userId:"GOL66291", freebet:35000},
+  {userId:"RTP42018", freebet:19000},
+  {userId:"BET90331", freebet:45000},
+  {userId:"WIN11872", freebet:11000},
+  {userId:"VIP77205", freebet:60000}
+];
 
 function renderHistory(){
   historyContainer.innerHTML="";
