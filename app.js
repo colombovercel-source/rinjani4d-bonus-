@@ -56,7 +56,7 @@ claimBtn.addEventListener("click", () => {
   saveHistory();
 
   showPopup(
-    "🎉 Selamat!",
+    "💖 Selamat 💖!",
     `User ID <b>${maskUser(userId)}</b> mendapatkan bonus <b>Rp ${bonus.toLocaleString("id-ID")}</b>`
   );
 
