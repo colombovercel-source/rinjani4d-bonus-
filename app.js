@@ -1,8 +1,10 @@
+document.addEventListener("DOMContentLoaded", function(){
+
 const userClaimed = {};
 const validVoucher = "2026MAXWIN";
 const historyContainer = document.getElementById('historyContainer');
 
-// Generate 20 user acak untuk riwayat
+// Generate 20 riwayat awal acak
 let historyData = [];
 for(let i=0;i<20;i++){
   const userId = "user"+Math.floor(Math.random()*1000);
@@ -21,11 +23,7 @@ function renderHistory(){
 }
 renderHistory();
 
-function getRandomFreebet(){
-  return Math.floor(Math.random()*(200000-20000+1)/1000)*1000;
-}
-
-function claimFreebet(){
+window.claimFreebet = function(){
   const userId = document.getElementById('userId').value.trim();
   const voucher = document.getElementById('voucher').value.trim();
   const messageEl = document.getElementById('message');
@@ -48,31 +46,37 @@ function claimFreebet(){
     return;
   }
 
+  // tampilkan progress bar sebelum popup
   progressContainer.style.display="block";
   progressBar.style.width="0%";
   messageEl.textContent="";
 
-  let width=0;
-  const interval=setInterval(()=>{
+  let width = 0;
+  const interval = setInterval(()=>{
     width++;
-    progressBar.style.width=width+"%";
-    if(width>=100){
+    progressBar.style.width = width + "%";
+    if(width >= 100){
       clearInterval(interval);
-      const freebet=getRandomFreebet();
-      userClaimed[userId]=freebet;
 
+      const freebet = Math.floor(Math.random()*(200000-20000+1)/1000)*1000;
+      userClaimed[userId] = freebet;
+
+      // update riwayat
       historyData.unshift({userId, freebet});
       if(historyData.length>20) historyData.pop();
       renderHistory();
 
+      // tampilkan popup
       document.getElementById("popupMessage").innerHTML=
         `User ID: <strong>${userId}</strong><br>Freebet: <strong>${freebet.toLocaleString('id-ID')}</strong><br>Silahkan screenshot dan kirim ke Admin.`;
-
       document.getElementById("popupModal").style.display="flex";
+
+      // sembunyikan progress bar
+      progressContainer.style.display="none";
     }
   },20);
 }
 
-function closePopup(){
+window.closePopup = function(){
   document.getElementById("popupModal").style.display="none";
 }
